@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie App</title>
+</head>
+<body>
+
+    <h1>My Movies</h1>
+    <button onclick="loadMovies()">Load Movies</button>
+
+    <ul id="movies"></ul>
+
+    <script>
+        async function loadMovies() {
+            const res = await fetch("http://13.82.166.157/api/v1/movies");
+            const data = await res.json();
+
+            const list = document.getElementById("movies");
+            list.innerHTML = "";
+
+            data.forEach(movie => {
+                const li = document.createElement("li");
+                li.textContent = movie.title;
+                list.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>
