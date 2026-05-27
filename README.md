@@ -148,3 +148,33 @@ Create service file
 Create file:
 service.yaml
 copy the service.yaml code in workloads.k8 folder in service branch
+
+
+
+
+
+
+
+
+
+Create backend.yaml
+
+kubectl port-forward deployment/movie-backend 5000:80
+
+create backend-servive.yaml
+
+az acr login -n monicacontainerregistry123 --expose-token
+
+az acr build \
+  --registry monicacontainerregistry123 \
+  --image movie-backend:1.0 \
+  ./backend
+
+  you will see these
+  NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)        AGE
+backend-service      LoadBalancer   10.0.205.0     13.82.166.157    80:30900/TCP   161m
+frontend-service     LoadBalancer   10.0.151.231   57.151.30.98     80:31204/TCP   7m15s
+kubernetes           ClusterIP      10.0.0.1       <none>           443/TCP        7h27m
+nginx-clusterip      ClusterIP      10.0.106.49    <none>           80/TCP         4h51m
+nginx-loadbalancer   LoadBalancer   10.0.133.195   20.241.184.145   80:30304/TCP   4h45m
+
