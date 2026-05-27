@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-clusterip
+  namespace: default
+
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-app
+
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+
+
+    # ===============================
+# LOADBALANCER SERVICE
+# Public internet access
+# ===============================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-loadbalancer
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
