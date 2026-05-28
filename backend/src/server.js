@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const movies = require("./data/movie");
+const movies = require("./data/movies");
 
 const app = express();
 app.use(cors());
