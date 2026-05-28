@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
-  name: frontend-Deployment
-  namespace: default
+  name: movie-frontend
 
 spec:
-  replicas: 3
+  replicas: 2
 
   selector:
     matchLabels:
@@ -18,8 +18,8 @@ spec:
 
     spec:
       containers:
-      - name: frontend-container
-        image: nginx:latest
-
+      - name: frontend
+        image: monicacontainerregistry123.azurecr.io/movie-frontend:1.0
+        
         ports:
         - containerPort: 80
