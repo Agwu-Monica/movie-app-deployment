@@ -10,7 +10,7 @@ Deploy applications to Kubernetes
 Expose applications publicly
 Understand how everything connects together
 
-ARCHITECTURE
+## ARCHITECTURE
 
 User Browser
       ↓
@@ -22,7 +22,7 @@ Backend ClusterIP Service
       ↓
 Backend Pods
 
-TECHNOLOGIES USED
+## TECHNOLOGIES USED
 Microsoft Azure	Cloud platform
 Azure Kubernetes Service	
 Kubernetes cluster
@@ -36,21 +36,21 @@ OpenLens	Kubernetes dashboard
 
 
 
-STEP 1 — Create Project Folder 
+### STEP 1 — Create Project Folder 
 On your PC:
 C:\k8s-azure\
 
  
-STEP 2 — Open Folder in PowerShell 
+### STEP 2 — Open Folder in PowerShell 
 cd C:\k8s-azure
 
 
-STEP 4 — LOGIN
+### STEP 3 — LOGIN
 az login --use-device-code
  Browser opens → sign in
 
 
-STEP 5 — CREATE RESOURCE GROUP
+### STEP 4 — CREATE RESOURCE GROUP
 Resource group = container for Azure resources.
 Create:
 az group create `
@@ -58,11 +58,11 @@ az group create `
   --location eastus
 
 
-  Verify:
+###  Verify:
 az group list --output table
 
 
-CREATE AKS CLUSTER
+## CREATE AKS CLUSTER
 
 Inside:
 C:\k8s-azure
@@ -70,23 +70,24 @@ create:
 aks.bicep
  copy the aks.bicep code in service branch
 
-DEPLOY AKS
+
+## DEPLOY AKS
 az deployment group create --resource-group monica-rg --template-file aks.bicep
 Wait 10–20 minutes.
 if it fails go to https://github.com/Azure/bicep/releases/tag/v0.43.8 download bicep-win-x64.exe on your local computer, make sure its in download folder 
 
 
-Now in PowerShell:
+## Now in PowerShell:
 run cd $HOME\Downloads and this .\bicep-win-x64.exe
 
 
-Move it to Azure folder
+## Move it to Azure folder
 Run: Move-Item .\bicep-win-x64.exe $HOME\.azure\bin\bicep.exe -Force
 
 Test: az bicep version
 az bicep install
 
-go back to correct folder
+### go back to correct folder
 Run:
 cd "C:\Users\owner\OneDrive\Desktop\K8S-AZURE"
 Then check: dir
@@ -97,7 +98,7 @@ az deployment group create --resource-group monica-rg --template-file aks.bicep
 
 if it fails run : az aks get-versions --location eastus -o table pick the highest version usually No 1 edit this line param kubernetesVersion string = '1.35.3' in your code and put it
 
-This service is needed because your Bicep includes:
+### This service is needed because your Bicep includes:
 Log Analytics
 Monitoring (OMS agent)
 Run this:
@@ -105,24 +106,25 @@ az provider register --namespace Microsoft.OperationsManagement
 
 then wait Registration takes: 1–5 minutes
 
-Check status:
+### Check status:
 az provider show --namespace Microsoft.OperationsManagement --query registrationState
 You will see: "Registered"
 
-ALSO register this (important for AKS monitoring)
+### ALSO register this (important for AKS monitoring)
 Run:
 az provider register --namespace Microsoft.OperationalInsights
 
 redeploy: az deployment group create --resource-group monica-rg --template-file aks.bicep
 
 
-VERIFY CLUSTER
+## VERIFY CLUSTER
 kubectl get nodes
 
 Expected:
 aks-systempool...
 
-CREATE AZURE CONTAINER REGISTRY
+
+## CREATE AZURE CONTAINER REGISTRY
 
 Create ACR:
 az acr create `
@@ -131,13 +133,13 @@ az acr create `
   --sku Basic
 
 
-LOGIN TO ACR
+### LOGIN TO ACR
 az acr login `
   --name monicacontainerregistry123
 
 
 
-Open VS Code → terminal and run:
+### Open VS Code → terminal and run:
 mkdir workloads.k8         
 cd workloads.k8       
 
@@ -165,11 +167,11 @@ kubectl get pods
 kubectl get rs
 
 
-download openlens/freelens and confirm in openlens/freelens
+## Download openlens/freelens and confirm in openlens/freelens
 open the pod you created go down you will see forward click on it and add the  pod number   you will see welcome to nginx
 
 
-SCALE YOUR REPLICASET
+## SCALE YOUR REPLICASET
 First check current ReplicaSet:
 kubectl get rs
 
@@ -182,18 +184,18 @@ Verify
 kubectl get pods
 
 
-CREATE DEPLOYMENT FILE
+## CREATE DEPLOYMENT FILE
 Create deploy.yaml file
 copy the DEPLOYMENT 1 (NGINX v1) deploy.yaml code in workloads.k8 folder in service branch
 
-CREATE DEPLOYMENT FILE
+## CREATE DEPLOYMENT FILE
 Create deploy.yaml file
 copy the DEPLOYMENT 2 (LATEST NGINX) deploy.yaml code in workloads.k8 folder in service branch
 
 kubectl apply -f deploy.yaml
 
 
-ROLLING UPDATE (UPGRADE IMAGE)
+### ROLLING UPDATE (UPGRADE IMAGE)
 
 Example upgrade v1 → v2:
 
@@ -206,10 +208,10 @@ If something breaks:
 kubectl rollout undo deployment/nginx-deploy-v1
 
 
-CHECK ROLLOUT STATUS
+### CHECK ROLLOUT STATUS
 kubectl rollout status deployment/nginx-deploy-v1
 
-CHECK HISTORY
+### CHECK HISTORY
 kubectl rollout history deployment/nginx-deploy-v1
 
 
@@ -222,13 +224,13 @@ Look for:
 Image: nginx:1.23
 
 
-Create service file
+## Create service file
 Create file:
 service.yaml
 copy the service.yaml code in workloads.k8 folder in service branch
 
 
-— CREATE APPLICATION STRUCTURE
+## CREATE APPLICATION STRUCTURE
 
 Create folders:
 mkdir backend
@@ -237,7 +239,7 @@ mkdir kubernetes
 
 
 
-CREATE BACKEND APPLICATION
+## CREATE BACKEND APPLICATION
 
 Go into backend: cd backend
 Create src folder > data > movie.js
@@ -246,7 +248,8 @@ package-lock.json file
 server.js file
 dockerfile
 
-TEST BACKEND LOCALLY
+
+## TEST BACKEND LOCALLY
 Run:
 npm install
 npm start
@@ -255,7 +258,7 @@ Open:
 http://localhost:5000/api/v1/movies
 
 
-PHASE 10 — CREATE FRONTEND APPLICATION
+## CREATE FRONTEND APPLICATION
 
 Go into frontend:
 cd frontend
@@ -263,7 +266,7 @@ create dockerfile
 index.html file
 
 
-PHASE 11 — BUILD IMAGES INTO ACR
+## BUILD IMAGES INTO ACR
 
 Build Backend Image
 az acr build `
@@ -278,7 +281,7 @@ az acr build `
   ./frontend
 
 
-CREATE KUBERNETES MANIFESTS
+## CREATE KUBERNETES MANIFESTS
 
 Go into:
 cd kubernetes
@@ -288,7 +291,7 @@ frontend.yaml file
 frontend-servive.yaml file
 
 
-PHASE 13 — DEPLOY APPLICATIONS
+ ## DEPLOY APPLICATIONS
 
 Deploy backend:
 kubectl apply -f backend.yaml
@@ -299,7 +302,7 @@ kubectl apply -f frontend.yaml
 kubectl apply -f frontend-service.yaml
 
 
-VERIFY EVERYTHING
+### VERIFY EVERYTHING
 kubectl get pods
 kubectl get svc
 
@@ -310,18 +313,19 @@ backend-service	ClusterIP
 frontend-service	LoadBalancer
 
 
-GET PUBLIC IP
+### GET PUBLIC IP
 kubectl get svc
 
 Example:
 frontend-service   LoadBalancer   57.151.30.98
 
-Open browser:
+### Open browser:
 http://57.151.30.98
 Your movie app appears.
 
 
-HOW EVERYTHING WORKS
+
+## HOW EVERYTHING WORKS
 
 Frontend
 Displays webpage
@@ -342,7 +346,7 @@ Kubernetes Services
 Create networking between applications
 
 
-CHECK IN OPENLENS
+## CHECK IN OPENLENS
 
 Open:
 OpenLens
@@ -359,7 +363,7 @@ Networking
 
 
 
-DELETE EVERYTHING WHEN DONE
+## DELETE EVERYTHING WHEN DONE
 
 Delete resource group:
 
